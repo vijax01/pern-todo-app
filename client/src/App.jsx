@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from "./api.js"
 
 function App() {
 
@@ -16,7 +17,7 @@ function App() {
      const handleSubmit = async () => {
 
           try {
-               await axios.post('/save', {
+               await axios.post(`${API_URL}/save`, {
                     text: inputText
                })
           } catch (err) {
@@ -33,7 +34,7 @@ function App() {
      const handleDelete = async (id) => {
           if (confirm("Are you sure you want to delete this ?")) {
                try {
-                    await axios.delete(`/delete/${id}`);
+                    await axios.delete(`${API_URL}/delete/${id}`);
                     fetchMessages(); // refresh after delete
                } catch (err) {
                     console.log("Delete error . ", err)
@@ -54,7 +55,7 @@ function App() {
 
      // update data in the database
      const handleUpdateNote = async () => {
-          await axios.put(`/update/${editWalaContent.id}`, { text: editWalaContent.text });
+          await axios.put(`${API_URL}/update/${editWalaContent.id}`, { text: editWalaContent.text });
           setShowEditModal(false);
           fetchMessages();
      };
@@ -63,7 +64,7 @@ function App() {
 
      // toggle checkbox in the database
      const toggleCompleted = async (id, checkboxValue) => {
-          await axios.put(`/toggleCheckbox/${id}`, {completed: checkboxValue});
+          await axios.put(`${API_URL}/toggleCheckbox/${id}`, {completed: checkboxValue});
           fetchMessages();
      };
 
@@ -72,7 +73,7 @@ function App() {
      // fetch messages from the database
      const fetchMessages = async () => {
           try {
-               const res = await axios.get('/messages');
+               const res = await axios.get(`${API_URL}/messages`);
                setMessages(res.data);
           } catch (err) {
                console.log("Fetch error:", err);
