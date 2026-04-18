@@ -1,27 +1,16 @@
-import express from 'express';
-import pkg from 'pg';
-import cors from 'cors';
-import dotenv from 'dotenv';
 import pool from './db.js';
 
-dotenv.config();
 
-const { Pool } = pkg;
+import express from 'express';
+import cors from 'cors';
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+
 app.use(cors());
 app.use(express.json());
-
-
-//db connection 
-// const pool = new Pool({
-//      user: process.env.DB_USER,
-//      host: process.env.DB_HOST,
-//      database: process.env.DB_NAME,
-//      password: process.env.DB_PASSWORD,
-//      port: process.env.DB_PORT,
-// });
 
 
 
@@ -49,11 +38,8 @@ app.post('/save', async (req, res) => {
      const { text } = req.body;
 
      try {
-          const result = await pool.query(
-               'INSERT INTO messages (text) VALUES($1) RETURNING * ',
-               [text]
-          );
-          res.json(result.rows[0]);
+          const result = await pool.query('INSERT INTO messages (text) VALUES($1) RETURNING * ',[text]);
+          res.status(200).json(result.rows[0]);
      } catch (err) {
           console.error(err);
           res.status(500).send('ERROR');
@@ -83,7 +69,6 @@ app.put('/update/:id', async (req, res) => {
      try {
           const { id } = req.params;
           const { text } = req.body;
-          console.log(id, text);
 
           const updatedNote = await pool.query('UPDATE messages SET text = $1 WHERE id = $2', [text, id]);
           res.sendStatus(200);// success signal
